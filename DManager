@@ -1,0 +1,105 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+
+//import DManager.Node;
+
+
+public class DManager {
+	
+	private Node start = null;  // (root, head), start of the line
+	private Node end = null;    // end of the line
+	private ArrayList<Node> nonCompatibleDogs = new ArrayList<Node>();
+	
+	private class Node{   // represents a DOG as linked list Node
+
+		int dogId = 0;
+		ArrayList<String> listOfInstructions = new ArrayList<String>();
+	    Node next;
+	    
+		
+		public Node( int dogId, ArrayList<String> ListOfInstruction){
+			this.dogId = dogId;
+		    this.listOfInstructions = ListOfInstruction;	// list of compatibility instructions
+			next = null;
+		
+		}
+	}
+	
+	/* Check if a DOG B can stand behind Dog A
+	 *  
+	 */
+	
+	public boolean canDogBehind(Node dogA, Node dogB ){
+	    // Check listOfInstructions to test Behind condition	
+     	return true;
+	}
+	
+	/* Check if a DOG B can stand before Dog A
+	 * 
+	 */
+	
+	public boolean canDogBefore(Node dogA, Node dogB ){
+	    // Check listOfInstructions to test Before condition	
+      	return true;
+	}
+	/*
+	 * Function to add a next Dog in line
+	 * DogLine is a double link list so any insertion
+	 * has to be checked for in front and back (start of line)C--B--A--D--E(End of line)
+	 * Can a new DOG be placed in front of any DOG like before C or B or A?
+	 * Also if has to be in middle, it needs to check if it
+	 * is compatible for a DOG in front and back unless the DOG is at the end or at the 
+	 * start of a line  
+	 */
+	
+	public void insertDog(Node position, Node newDog){
+	    
+		// modify double link list and insert the dog after position node in the list..
+		Node t = position.next;
+		position.next = newDog;
+		newDog.next= t;
+		return;
+   }
+	
+  /* Will add DOG in a line, 
+   *  DOG will be checked on compatibility with others DOGS in line and if there 
+   *  is no compatibility found, DOG will be placed at the end of line..
+   * 
+   */
+  public void addDog(Node dog){
+	  
+	  if ((start == null) && (end == null)){
+		  // first Dog is in line
+		  start = dog;
+		  end = dog;
+	  }
+	  
+	  while (start != null && end != null  && start != end ){
+		  
+		  // little improvement is possible here as it touches each node twice
+		  
+		  if ( (canDogBehind(start, dog)) && canDogBefore(start.next, dog)){
+			  // dog was added in line from a start position
+			  // for first and last positions in line, before() and behind() 
+			  // will return empty and returns true
+			  insertDog(start, dog);
+			  // as a new node get added, check if there is any previous 
+			  // non compatible DOG can be added in the Q.
+			  Iterator<Node> i = nonCompatibleDogs.iterator();
+			  while ( i.hasNext()){  // build the list again
+				  addDog(i.next());
+			  }
+			  return;
+		  }
+		 start = start.next; 
+	  }
+	  
+	   // At this point a new DOG can't be added in Q so save it for later addition
+	  nonCompatibleDogs.add(dog);
+  }
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
